@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment" >
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabSelectedTextColor="#3850CE"
+        app:tabIndicatorColor="#3850CE"
+        app:tabTextColor="@color/black_variant"
+        app:tabIndicatorFullWidth="false"
+        app:tabGravity="fill"
+        app:tabTextAppearance="@style/TabTextAppearance"
+        app:tabMode="scrollable">
+
+
+    </com.google.android.material.tabs.TabLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/news_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <include layout="@layout/loader_layout"/>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
