@@ -15,4 +15,6 @@
     <color name="black_variant">#1c1c1c</color>
     <color name="placeholder_grey">#AAADC4</color>
     <color name="placeholder_grey_20">#33AAADC4</color>
+    <color name="gray_deep">#666666</color>
+
 </resources>

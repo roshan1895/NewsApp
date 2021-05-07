@@ -16,15 +16,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.tabs.TabLayout;
 import com.news.newsapp.R;
+import com.news.newsapp.adapter.BannerAdapter;
+import com.news.newsapp.adapter.SliderAdapter;
 import com.news.newsapp.adapter.TopNewsAdapter;
 import com.news.newsapp.models.Article;
 import com.news.newsapp.models.top_news.AllTopNewsResponse;
 import com.news.newsapp.utils.ApiClient;
 import com.news.newsapp.utils.Constants;
+import com.news.newsapp.utils.ExpandingViewPagerTransformer;
 import com.news.newsapp.utils.PaginationAdapterCallback;
 import com.news.newsapp.utils.PaginationScrollListener;
 import com.news.newsapp.utils.UrlRequest;
@@ -55,6 +59,13 @@ public class HomeFragment extends Fragment implements PaginationAdapterCallback 
     List<Article> articleList;
     String category="";
     String tabName="all";
+    ViewPager pager;
+    int limit=5;
+    boolean isBanner=false;
+    List<Article> bannerList;
+    SliderAdapter sliderAdapter;
+    RecyclerView banners_rv;
+    BannerAdapter bannerAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,11 +77,19 @@ public class HomeFragment extends Fragment implements PaginationAdapterCallback 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tab_home=getView().findViewById(R.id.tab_home);
-        news_rv=getView().findViewById(R.id.news_rv);
         loader=getView().findViewById(R.id.loader);
         animationView=getView().findViewById(R.id.animationView);
-        newsRv=getActivity().findViewById(R.id.news_rv);
-        progressBar=getActivity().findViewById(R.id.progress_news);
+        newsRv=getView().findViewById(R.id.news_rv);
+        banners_rv=getView().findViewById(R.id.banners_rv);
+        banners_rv.hasFixedSize();
+        banners_rv.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
+        bannerList=new ArrayList<>();
+//        pager=getView().findViewById(R.id.banner_pager);
+//        pager.setPadding(180, 0, 180, 0);
+//        pager.setPageMargin(16);
+//        //pager.setPadding(viewPagerPadding+80, viewPagerPadding+80, 0, viewPagerPadding+80);
+//        ExpandingViewPagerTransformer pagerTransformer=new ExpandingViewPagerTransformer();
+//        pager.setPageTransformer(true,pagerTransformer);
         setupTab();
         newsRv.hasFixedSize();
         layoutManager=new LinearLayoutManager(getActivity());
@@ -129,6 +148,8 @@ Log.e("tab_pos",tab.getPosition()+"");
                       newsAdapter.clear();
                       animationView.playAnimation();
                       loader.setVisibility(View.VISIBLE);
+                      bannerList=new ArrayList<>();
+                      isBanner=false;
                       loadTopnews();
                       break;
                   case 1: tabName=tab.getText().toString();
@@ -173,6 +194,8 @@ Log.e("tab_pos",tab.getPosition()+"");
         animationView.playAnimation();
         loader.setVisibility(View.VISIBLE);
          category=name;
+        bannerList=new ArrayList<>();
+        isBanner=false;
          loadTopnews();
 
     }
@@ -203,7 +226,20 @@ Log.e("tab_pos",tab.getPosition()+"");
                     if(allTopNewsResponse.getStatus().equalsIgnoreCase("ok"))
                     {
                         if(!allTopNewsResponse.getArticles().isEmpty())
-                        {
+                        { if(!isBanner)
+                          {
+                              List<Article> list=allTopNewsResponse.getArticles();
+                              for(int i=0;i<limit;i++)
+                              {
+                                  Log.e("banner_list",list.get(i).getTitle()+"");
+
+                                  bannerList.add(list.get(i));
+                              }
+                              bannerAdapter=new BannerAdapter(getActivity(),bannerList);
+                              banners_rv.setAdapter(bannerAdapter);
+                              isBanner=true;
+                          }
+
                             if (currentPage != PAGE_START)
                                 try {
                                     newsAdapter.removeLoadingFooter();
@@ -250,7 +286,12 @@ Log.e("tab_pos",tab.getPosition()+"");
         if (currentPage == PAGE_START) {
             try {
                 if (!articleList.isEmpty()) {
-                    newsAdapter.addAll(articleList);
+                     List<Article> l=new ArrayList<>();
+                     for(int i=limit;i<articleList.size();i++)
+                     {
+                         l.add(articleList.get(i));
+                     }
+                    newsAdapter.addAll(l);
 
                 }
                 else
