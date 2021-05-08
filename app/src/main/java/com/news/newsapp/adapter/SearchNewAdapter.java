@@ -29,15 +29,18 @@ public class SearchNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
    List<Article> list;
     private boolean isLoadingAdded = false;
     public int currentPosition = -1;
-    private static final int ITEM = 0;
-    private static final int LOADING = 1;
+
+    private static final int ITEM1 = 0;
+    private static final int ITEM2 = 1;
+
+    private static final int LOADING = 2;
     private boolean retryPageLoad = false;
     private String errorMsg;
     PaginationAdapterCallback mCallback;
     RequestManager glide;
-     public interface OnItemClickListener
+    public interface OnItemClickListener
     {
-        void onItemClick(int pos);
+        void onItemClick(int pos,String url);
     }
     OnItemClickListener onItemClickListener;
     public SearchNewAdapter(Context context, PaginationAdapterCallback mCallback, OnItemClickListener onItemClickListener)
@@ -51,10 +54,15 @@ public class SearchNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ITEM) {
+        if (viewType == ITEM1) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_feed_layout, parent, false);
             return new SearchHolder(view);
-        } else {
+        }
+        else if (viewType == ITEM2) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_without_image, parent, false);
+            return new ArticlesNewHolder(view);
+        }
+        else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_progress, parent, false);
             return new LoadingHolder(view);
         }
@@ -67,6 +75,10 @@ public class SearchNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         } else if (holder instanceof LoadingHolder) {
             showloading((LoadingHolder) holder, position);
+        }
+        else if(holder instanceof ArticlesNewHolder)
+        {
+            showNewArticle((ArticlesNewHolder)holder,position);
         }
     }
     @Override
@@ -113,6 +125,30 @@ public class SearchNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
         }
     }
+    public class ArticlesNewHolder extends RecyclerView.ViewHolder
+    { TextView newsTitle,newsSource,newsDateTime;
+
+        public ArticlesNewHolder(@NonNull View itemView) {
+            super(itemView);
+            newsTitle=itemView.findViewById(R.id.news_title);
+            newsSource=itemView.findViewById(R.id.news_source);
+            newsDateTime=itemView.findViewById(R.id.news_datetime);
+        }
+    }
+    void showNewArticle(ArticlesNewHolder holder, int pos)
+    {
+
+        holder.newsTitle.setText(list.get(pos).getTitle());
+        holder.newsSource.setText(list.get(pos).getSource().getName());
+        holder.newsDateTime.setText(list.get(pos).getPublishedAt());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(pos,list.get(pos).getUrl());
+            }
+        });
+    }
+
     void showdata(SearchHolder holder,int position)
     {
         Glide.with(context).load(list.get(position).getUrlToImage()).into(holder.profile_image);
@@ -144,7 +180,8 @@ public class SearchNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
     public int getItemViewType(int position) {
-        return (position == list.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
+        return  (position==list.size()-1&&isLoadingAdded)?LOADING:(list.get(position).getUrlToImage()!=null?ITEM1:ITEM2);
+//        return (position == articleList.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
 
     public void add(Article r) {

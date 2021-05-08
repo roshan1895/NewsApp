@@ -224,6 +224,7 @@ public class SearchActivity extends AppCompatActivity implements PaginationAdapt
     {
         Call<AllTopNewsResponse> call;
         call= ApiClient.getInstance().create(UrlRequest.class).searchNews(getString(R.string.api_key),query, "en");
+        Log.e("query_search",query+"");
         call.enqueue(new Callback<AllTopNewsResponse>() {
             @Override
             public void onResponse(Call<AllTopNewsResponse> call, Response<AllTopNewsResponse> response) {
@@ -344,8 +345,11 @@ public class SearchActivity extends AppCompatActivity implements PaginationAdapt
 
     }
 
-    @Override
-    public void onItemClick(int pos) {
 
+    @Override
+    public void onItemClick(int pos, String url) {
+        Intent intent=new Intent(SearchActivity.this,NewsDetailActivity.class);
+        intent.putExtra("web_url",url);
+        startActivity(intent);
     }
 }

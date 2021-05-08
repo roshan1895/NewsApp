@@ -58,7 +58,7 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
        else if (viewType == ITEM2) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_without_image, parent, false);
-            return new ArticlesHolder(view);
+            return new ArticlesNewHolder(view);
         }
         else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_progress, parent, false);
