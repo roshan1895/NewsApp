@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,25 +28,39 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Context context;
     List<Article> articleList;
     PaginationAdapterCallback mCallback;
-    private static final int ITEM = 0;
-    private static final int LOADING = 1;
+    private static final int ITEM1 = 0;
+    private static final int ITEM2 = 1;
+
+    private static final int LOADING = 2;
     private boolean retryPageLoad = false;
     private boolean isLoadingAdded = false;
     private String errorMsg;
-    public TopNewsAdapter(Context context,PaginationAdapterCallback mCallback)
+
+    public interface OnItemClickListener
+    {
+        void onItemClick(int pos,String url);
+    }
+    OnItemClickListener onItemClickListener;
+    public TopNewsAdapter(Context context,PaginationAdapterCallback mCallback,OnItemClickListener onItemClickListener)
     {
         this.context=context;
         articleList=new ArrayList<>();
         this.mCallback=mCallback;
+        this.onItemClickListener=onItemClickListener;
         Log.e("adapter_callback","running");
     }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ITEM) {
+        if (viewType == ITEM1) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_feed_layout, parent, false);
             return new ArticlesHolder(view);
-        } else {
+        }
+       else if (viewType == ITEM2) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_without_image, parent, false);
+            return new ArticlesHolder(view);
+        }
+        else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_progress, parent, false);
             return new LoadingHolder(view);
         }     }
@@ -57,6 +72,10 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         } else if (holder instanceof LoadingHolder) {
             showLoading((LoadingHolder) holder, position);
+        }
+        else if(holder instanceof ArticlesNewHolder)
+        {
+            showNewArticle((ArticlesNewHolder)holder,position);
         }
     }
 
@@ -106,6 +125,16 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         }
     }
+    public class ArticlesNewHolder extends RecyclerView.ViewHolder
+    { TextView newsTitle,newsSource,newsDateTime;
+
+        public ArticlesNewHolder(@NonNull View itemView) {
+            super(itemView);
+            newsTitle=itemView.findViewById(R.id.news_title);
+            newsSource=itemView.findViewById(R.id.news_source);
+            newsDateTime=itemView.findViewById(R.id.news_datetime);
+        }
+    }
     void showLoading(LoadingHolder holder, int position)
     {
         if (retryPageLoad) {
@@ -123,12 +152,36 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
     void showArticle(ArticlesHolder holder,int pos)
-    {
-        Glide.with(context).load(articleList.get(pos).getUrlToImage()).into(holder.profile_image);
+    {  if(articleList.get(pos).getUrlToImage()!=null)
+       {
+           Glide.with(context).load(articleList.get(pos).getUrlToImage()).into(holder.profile_image);
+
+       }
+
         holder.newsTitle.setText(articleList.get(pos).getTitle());
         holder.newsSource.setText(articleList.get(pos).getSource().getName());
         holder.newsDateTime.setText(articleList.get(pos).getPublishedAt());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(pos,articleList.get(pos).getUrl());
+            }
+        });
     }
+    void showNewArticle(ArticlesNewHolder holder,int pos)
+    {
+
+        holder.newsTitle.setText(articleList.get(pos).getTitle());
+        holder.newsSource.setText(articleList.get(pos).getSource().getName());
+        holder.newsDateTime.setText(articleList.get(pos).getPublishedAt());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(pos,articleList.get(pos).getUrl());
+            }
+        });
+    }
+
     public void showRetry(boolean show, @Nullable String errorMsg) {
         retryPageLoad = show;
         notifyItemChanged(articleList.size() - 1);
@@ -136,7 +189,8 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (errorMsg != null) this.errorMsg = errorMsg;
     }
     public int getItemViewType(int position) {
-        return (position == articleList.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
+        return  (position==articleList.size()-1&&isLoadingAdded)?LOADING:(articleList.get(position).getUrlToImage()!=null?ITEM1:ITEM2);
+//        return (position == articleList.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
 
     public void add(Article r) {
@@ -195,6 +249,36 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public long getItemId(int position) {
         return position;
+    }
+    public  void updateCollections(Context context,List<Article> catList )
+    {    Log.e("cat_array_list",catList+"");
+        this.context=context;
+        Log.e("cat_arr","running");
+        final DiffUtil.DiffResult result=DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return articleList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return catList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return articleList.get(oldItemPosition).getTitle().equalsIgnoreCase(catList.get(newItemPosition).getTitle());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Article new_main_cat=articleList.get(oldItemPosition);
+                Article old_main_cat=catList.get(newItemPosition);
+                return new_main_cat.getTitle().equalsIgnoreCase(old_main_cat.getTitle());
+            }
+        });
+        this.articleList=catList;
+        result.dispatchUpdatesTo(this);
     }
 
 }

@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements PaginationAdapterCallback 
         newsRv.hasFixedSize();
         layoutManager=new LinearLayoutManager(getActivity());
         newsRv.setLayoutManager(layoutManager);
-        newsAdapter=new TopNewsAdapter(getActivity(),HomeFragment.this);
+//        newsAdapter=new TopNewsAdapter(getActivity(),HomeFragment.this);
         newsRv.setAdapter(newsAdapter);
         newsRv.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
