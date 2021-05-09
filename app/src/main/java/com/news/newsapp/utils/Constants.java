@@ -27,5 +27,10 @@ public class Constants {
         }
         return errorMsg;
     }
+    public static String truncateExtra(String content) {
+        if (content == null)
+            return "";
+        return content.replaceAll("(\\[\\+\\d+ chars])", "");
+    }
 
 }

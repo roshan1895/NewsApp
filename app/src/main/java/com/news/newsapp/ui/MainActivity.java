@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements PaginationAdapter
     LinearLayoutManager layoutManager;
     TopNewsAdapter newsAdapter;
     List<Article> articleList;
-    String category="";
+    String category="general";
     String tabName="all";
     ViewPager pager;
     int limit=5;
@@ -126,54 +126,41 @@ public class MainActivity extends AppCompatActivity implements PaginationAdapter
     }
     void setupTab()
     {
-        tab_home.addTab(tab_home.newTab().setText("All"));
-        tab_home.addTab(tab_home.newTab().setText("Business"));
-        tab_home.addTab(tab_home.newTab().setText("Entertainment"));
-        tab_home.addTab(tab_home.newTab().setText("General"));
-        tab_home.addTab(tab_home.newTab().setText("Health"));
-        tab_home.addTab(tab_home.newTab().setText("Science"));
-        tab_home.addTab(tab_home.newTab().setText("Sports"));
-        tab_home.addTab(tab_home.newTab().setText("Technology"));
+        tab_home.addTab(tab_home.newTab().setText("General").setIcon(R.drawable.ic_headlines));
+        tab_home.addTab(tab_home.newTab().setText("Business").setIcon(R.drawable.nav_business));
+        tab_home.addTab(tab_home.newTab().setText("Entertainment").setIcon(R.drawable.nav_entertainment));
+        tab_home.addTab(tab_home.newTab().setText("Health").setIcon(R.drawable.nav_health));
+        tab_home.addTab(tab_home.newTab().setText("Science").setIcon(R.drawable.nav_science));
+        tab_home.addTab(tab_home.newTab().setText("Sports").setIcon(R.drawable.nav_sports));
+        tab_home.addTab(tab_home.newTab().setText("Technology").setIcon(R.drawable.nav_tech));
         tab_home.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.e("tab_pos",tab.getPosition()+"");
                 switch (tab.getPosition())
                 {
-                    case 0: tabName="all";
-                        articleList=new ArrayList<>();
-                        if(newsAdapter!=null)
-                        {
-                            newsAdapter.clear();
-                        }
-                        newsAdapter.clear();
-                        animationView.playAnimation();
-                        loader.setVisibility(View.VISIBLE);
-                        bannerList=new ArrayList<>();
-                        isBanner=false;
-                        loadTopnews();
-                        break;
-                    case 1: tabName=tab.getText().toString();
+                    case 0:
                         setData(tab.getText().toString());
                         break;
-                    case 2: tabName=tab.getText().toString();
+                    case 1:
                         setData(tab.getText().toString());
                         break;
-                    case 3: tabName=tab.getText().toString();
+                    case 2:
                         setData(tab.getText().toString());
                         break;
-                    case 4: tabName=tab.getText().toString();
+                    case 3:
                         setData(tab.getText().toString());
                         break;
-                    case 5: tabName=tab.getText().toString();
+                    case 4:
                         setData(tab.getText().toString());
                         break;
-                    case 6: tabName=tab.getText().toString();
+                    case 5:
                         setData(tab.getText().toString());
                         break;
-                    case 7: tabName=tab.getText().toString();
+                    case 6:
                         setData(tab.getText().toString());
                         break;
+
                 }
             }
 
@@ -202,14 +189,7 @@ public class MainActivity extends AppCompatActivity implements PaginationAdapter
     }
     void loadTopnews()
     {
-        Call<AllTopNewsResponse> call;
-        if(tabName.equalsIgnoreCase("all"))
-        {
-            call= ApiClient.getInstance().create(UrlRequest.class).topNewsByCat(getString(R.string.api_key),"", "en");
-
-        }
-        else
-            call= ApiClient.getInstance().create(UrlRequest.class).topNewsByCat(getString(R.string.api_key),category, "en");
+        Call<AllTopNewsResponse>  call= ApiClient.getInstance().create(UrlRequest.class).topNewsByCat(getString(R.string.api_key),category, "en");
 
         Log.e("category",category+"");
         Log.e("lan", Constants.LANGUAGE+"");
@@ -326,10 +306,22 @@ public class MainActivity extends AppCompatActivity implements PaginationAdapter
 
     }
 
+
     @Override
-    public void onItemClick(int pos, String url) {
-        Intent intent=new Intent(MainActivity.this,NewsDetailActivity.class);
-        intent.putExtra("web_url",url);
+    public void onItemClick(int pos, String title, String source, String datetime, String desc, String content, String url) {
+        Intent intent=new Intent(MainActivity.this,NewsDetailsScrollingActivity.class);
+        intent.putExtra("news_title",title);
+        intent.putExtra("news_source",source);
+        intent.putExtra("news_datetime",datetime);
+        intent.putExtra("news_desc",desc);
+        intent.putExtra("news_content",content);
+        intent.putExtra("news_url",url);
         startActivity(intent);
+    }
+
+    @Override
+    public void onMoreClick(int pos) {
+        SettingBottomMenu settingBottomMenu=new SettingBottomMenu();
+        settingBottomMenu.show(getSupportFragmentManager(),"SettingBottomSheet");
     }
 }

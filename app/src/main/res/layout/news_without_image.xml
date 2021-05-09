@@ -9,15 +9,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/news_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_medium"
-            android:text="hghciuyecdhu;eiou;dhljhdjfdgjhlcgdjccdhjacaghcbhj,hjk"
-            android:textColor="@color/black_variant"
-            android:textSize="16sp"
-            android:maxLines="2"/>
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/news_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="hghciuyecdhu;eiou;dhljhdjfdgjhlcgdjccdhjacaghcbhj,hjk"
+                android:textColor="@color/black_variant"
+                android:textSize="16sp"
+                android:layout_toStartOf="@id/more_btn"
+                android:maxLines="2"/>
+            <ImageButton
+                android:id="@+id/more_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_more_options"
+                android:background="@android:color/transparent"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

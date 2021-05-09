@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.news.newsapp.R;
 import com.news.newsapp.models.Article;
+import com.news.newsapp.ui.SettingBottomMenu;
 import com.news.newsapp.utils.PaginationAdapterCallback;
 
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface OnItemClickListener
     {
-        void onItemClick(int pos,String url);
+        void onItemClick(int pos,String title,String source,String datetime,String desc,String content,String url);
+        void onMoreClick(int pos);
     }
     OnItemClickListener onItemClickListener;
     public TopNewsAdapter(Context context,PaginationAdapterCallback mCallback,OnItemClickListener onItemClickListener)
@@ -115,6 +117,7 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public class ArticlesHolder extends RecyclerView.ViewHolder
     {  RoundedImageView profile_image;
        TextView newsTitle,newsSource,newsDateTime;
+       ImageButton more_btn;
 
         public ArticlesHolder(@NonNull View itemView) {
             super(itemView);
@@ -122,17 +125,21 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             newsTitle=itemView.findViewById(R.id.news_title);
             newsSource=itemView.findViewById(R.id.news_source);
             newsDateTime=itemView.findViewById(R.id.news_datetime);
+            more_btn=itemView.findViewById(R.id.more_btn);
 
         }
     }
     public class ArticlesNewHolder extends RecyclerView.ViewHolder
     { TextView newsTitle,newsSource,newsDateTime;
+    ImageButton more_btn;
 
         public ArticlesNewHolder(@NonNull View itemView) {
             super(itemView);
             newsTitle=itemView.findViewById(R.id.news_title);
             newsSource=itemView.findViewById(R.id.news_source);
             newsDateTime=itemView.findViewById(R.id.news_datetime);
+            more_btn=itemView.findViewById(R.id.more_btn);
+
         }
     }
     void showLoading(LoadingHolder holder, int position)
@@ -154,7 +161,7 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     void showArticle(ArticlesHolder holder,int pos)
     {  if(articleList.get(pos).getUrlToImage()!=null)
        {
-           Glide.with(context).load(articleList.get(pos).getUrlToImage()).into(holder.profile_image);
+           Glide.with(context).load(articleList.get(pos).getUrlToImage()).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(holder.profile_image);
 
        }
 
@@ -164,9 +171,16 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListener.onItemClick(pos,articleList.get(pos).getUrl());
+                onItemClickListener.onItemClick(pos,articleList.get(pos).getTitle(),articleList.get(pos).getSource().getName(),articleList.get(pos).getPublishedAt(),articleList.get(pos).getDescription(),articleList.get(pos).getContent(),articleList.get(pos).getUrl());
             }
         });
+        holder.more_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onMoreClick(pos);
+            }
+        });
+
     }
     void showNewArticle(ArticlesNewHolder holder,int pos)
     {
@@ -177,9 +191,16 @@ public class TopNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListener.onItemClick(pos,articleList.get(pos).getUrl());
+                onItemClickListener.onItemClick(pos,articleList.get(pos).getTitle(),articleList.get(pos).getSource().getName(),articleList.get(pos).getPublishedAt(),articleList.get(pos).getDescription(),articleList.get(pos).getContent(),articleList.get(pos).getUrl());
             }
         });
+        holder.more_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onMoreClick(pos);
+            }
+        });
+
     }
 
     public void showRetry(boolean show, @Nullable String errorMsg) {

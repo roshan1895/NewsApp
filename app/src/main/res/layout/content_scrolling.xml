@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+    android:id="@+id/news_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="18sp"
+    android:fontFamily="@font/roboto_medium"
+    android:textColor="@color/black_variant"
+    android:text="sdkjsbkdhgjghsanbdjgmahshsdk,,jskjdaslksj;dasjkdkasjkn/dm"
+    android:maxLines="2"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:id="@+id/news_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forbes"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/news_datetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_marginStart="16dp"
+            />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/news_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="fbhygeuyhfiu"
+        android:textColor="@color/black_variant"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/news_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="fbhygeuyhfiu"
+        android:textColor="@color/black_variant"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/read_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="Read Full Story"
+        android:textAllCaps="false"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        app:cornerRadius="8dp"
+        android:layout_gravity="center"/>
+
+
+</LinearLayout>
+</androidx.core.widget.NestedScrollView>
+
+
+

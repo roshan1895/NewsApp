@@ -151,7 +151,7 @@ public class SearchNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     void showdata(SearchHolder holder,int position)
     {
-        Glide.with(context).load(list.get(position).getUrlToImage()).into(holder.profile_image);
+        Glide.with(context).load(list.get(position).getUrlToImage()).error(R.drawable.placeholder).placeholder(R.drawable.placeholder).into(holder.profile_image);
         holder.newsTitle.setText(list.get(position).getTitle());
         holder.newsSource.setText(list.get(position).getSource().getName());
         holder.newsDateTime.setText(list.get(position).getPublishedAt());

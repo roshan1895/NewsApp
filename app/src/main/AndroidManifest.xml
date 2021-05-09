@@ -9,18 +9,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:networkSecurityConfig="@xml/network_security"
         android:theme="@style/Theme.NewsApp">
-        <activity android:name=".ui.NewsDetailActivity"
-            android:theme="@style/Theme.NewsApp.NoActionBar"/>
-        <activity
-            android:name=".ui.SearchActivity"
-            android:theme="@style/Theme.NewsApp.NoActionBar" />
-        <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name"
+        <activity android:name=".ui.SplashActivity"
             android:theme="@style/Theme.NewsApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +21,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.NewsDetailsScrollingActivity"
+            android:label="@string/title_activity_news_details_scrolling"
+            android:theme="@style/Theme.NewsApp.NoActionBar" />
+        <activity
+            android:name=".ui.NewsDetailActivity"
+            android:theme="@style/Theme.NewsApp.NoActionBar" />
+        <activity
+            android:name=".ui.SearchActivity"
+            android:theme="@style/Theme.NewsApp.NoActionBar" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.NewsApp.NoActionBar"/>
+
     </application>
 
 </manifest>
